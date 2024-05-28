@@ -1,65 +1,79 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaShoppingBag } from 'react-icons/fa';
-import { BsThreeDotsVertical } from 'react-icons/bs';
-import { data } from '../data/data.js';
 
-const orders = () => {
+const Orders = () => {
+  const [orders, setOrders] = useState([]);
+
+  useEffect(() => {
+    fetch('https://api4-eta.vercel.app/rep')
+      .then(response => response.json())
+      .then(data => {
+        const transformedData = data.map(order => {
+          const nameArray = order.nome.split(' ');
+          const firstName = nameArray.slice(0, 2).join(' ');
+
+          let status;
+          switch (order.situacao) {
+            case 1:
+              status = 'Em andamento';
+              break;
+            case 2:
+              status = 'Bloqueado';
+              break;
+            case 3:
+              status = 'Parcialmente faturado';
+              break;
+            case 4:
+              status = 'Atendido';
+              break;
+            default:
+              status = 'Desconhecido';
+          }
+
+          return {
+            total: parseFloat(order.valor) || 0,
+            pending: parseFloat(order.valorpen) || 0,
+            attended: parseFloat(order.valoraten) || 0,
+            name: { first: firstName },
+            status: status,
+            date: new Date(order.data).toLocaleDateString(),
+            method: 'Online',
+          };
+        });
+        setOrders(transformedData);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='flex justify-between px-4 pt-4'>
-        <h2>Orders</h2>
-        <h2>Welcome Back, Clint</h2>
+        <h2 className="text-lg">LISTA DE PEDIDOS</h2>
       </div>
-      <div className='p-4'>
-        <div className='w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto'>
-          <div className='my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
-            <span>Order</span>
-            <span className='sm:text-left text-right'>Status</span>
-            <span className='hidden md:grid'>Last Order</span>
-            <span className='hidden sm:grid'>Method</span>
-          </div>
-          <ul>
-            {data.map((order, id) => (
-              <li
-                key={id}
-                className='bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'
-              >
-                <div className='flex'>
-                  <div className='bg-purple-100 p-3 rounded-lg'>
-                    <FaShoppingBag className='text-purple-800' />
-                  </div>
-                  <div className='pl-4'>
-                    <p className='text-gray-800 font-bold'>
-                      ${order.total.toLocaleString()}
-                    </p>
-                    <p className='text-gray-800 text-sm'>{order.name.first}</p>
-                  </div>
-                </div>
-                <p className='text-gray-600 sm:text-left text-right'>
-                  <span
-                    className={
-                      order.status == 'Processing'
-                        ? 'bg-green-200 p-2 rounded-lg'
-                        : order.status == 'Completed'
-                        ? 'bg-blue-200 p-2 rounded-lg'
-                        : 'bg-yellow-200 p-2 rounded-lg'
-                    }
-                  >
-                    {order.status}
-                  </span>
-                </p>
-                <p className='hidden md:flex'>{order.date}</p>
-                <div className='sm:flex hidden justify-between items-center'>
-                  <p>{order.method}</p>
-                  <BsThreeDotsVertical />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ul>
+        {orders.map((order, id) => (
+          <li
+            key={id}
+            className='bg-gray-50 hover:bg-gray-100 rounded-lg my-2 p-6 grid grid-cols-1 md:grid-cols-4 gap-6 cursor-pointer'
+          >
+            <div className='flex items-center'>
+              <div className='bg-purple-100 p-2 rounded-lg'>
+                <FaShoppingBag className='text-purple-800' />
+              </div>
+              <div className='pl-3'>
+                <p className='text-gray-800 text-xl font-semibold truncate'>{order.name.first}</p>
+                <p className='text-gray-800 font-bold text-lg'>R${order.total.toLocaleString()}</p>
+                <p className='text-gray-800 text-sm truncate'>PENDENTE: R$ {order.pending.toLocaleString()}</p>
+                <p className='text-gray-800 text-sm truncate'>ATENDIDO: R$ {order.attended.toLocaleString()}</p>
+                <p className='text-gray-600 text-sm truncate'>DATA PEDIDO: {order.date}</p>
+                <p className='text-gray-600 text-sm truncate'>SITUAÇÃO: {order.status}</p> {/* Corrigido para usar 'status' */}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
 
-export default orders;
+export default Orders;
