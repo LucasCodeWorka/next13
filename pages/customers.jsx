@@ -1,44 +1,71 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
-import { data } from '../data/data.js';
 
-const customers = () => {
+const Customers = () => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    // Fetch data from API
+    fetch('https://api4-eta.vercel.app/cli')
+      .then(response => response.json())
+      .then(data => setData(data))
+      .catch(error => console.error('Error fetching data:', error));
+  }, []);
+
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='flex justify-between p-4'>
         <h2>Customers</h2>
-        <h2>Welcome Back, Clint</h2>
       </div>
-      <div className='p-4'>
-        <div className='w-full m-auto p-4 border rounded-lg bg-white overflow-y-auto'>
-          <div className='my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
-            <span>Name</span>
-            <span className='sm:text-left text-right'>Email</span>
-            <span className='hidden md:grid'>Last Order</span>
-            <span className='hidden sm:grid'>Method</span>
-          </div>
-          <ul>
-            {data.map((order, id) => (
-                <li key={id} className='bg-gray-50 hover:bg-gray-100 rounded-lg my-3 p-2 grid md:grid-cols-4 sm:grid-cols-3 grid-cols-2 items-center justify-between cursor-pointer'>
-                    <div className='flex items-center'>
-                        <div className='bg-purple-100 p-3 rounded-lg'>
-                            <BsPersonFill className='text-purple-800' />
-                        </div>
-                        <p className='pl-4'>{order.name.first + ' ' + order.name.last}</p>
-                    </div>
-                    <p className='text-gray-600 sm:text-left text-right'>{order.name.first}@gmail.com</p>
-                    <p className='hidden md:flex'>{order.date}</p>
-                    <div className='sm:flex hidden justify-between items-center'>
-                        <p>{order.method}</p>
-                        <BsThreeDotsVertical />
-                    </div>
-                </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+      <ul>
+        {data.map((order, id) => {
+          // Extracting the first four characters
+
+          return (
+            <li
+              key={id}
+              className='bg-gray-50 hover:bg-gray-100 rounded-lg my-2 p-6 grid grid-cols-1 md:grid-cols-4 gap-6 cursor-pointer'
+            >
+              <div className='flex items-center'>
+                <div className='bg-purple-100 p-3 rounded-lg'>
+                  <BsPersonFill className='text-purple-800' />
+                </div>
+                <div className='pl-3'>
+                  <p className='text-gray-800 text-xs font-semibold'>
+                    {order.nome}
+                  </p>
+                  <p className='text-gray-800 text-xs font-semibold truncate'>
+                    Primeira Compra: {new Date(order.primeiracompra).toLocaleDateString()}
+                  </p>
+                  <p className='text-gray-800 font-bold text-xs'>
+                    Última Compra: {new Date(order.ultimacompra).toLocaleDateString()}
+                  </p>
+                  <p className='text-gray-800 text-xs truncate'>
+                    CNPJ: {order.cpfcnpj}
+                  </p>
+                  <p className='text-gray-800 text-xs truncate'>
+                    {order.cidade} - {order.uf}
+                  </p>
+                  <p className='text-gray-600 text-xs truncate'>
+                    CEP: {order.cep}
+                  </p>
+                  <p className='text-gray-600 text-xs truncate'>
+                    TEL: {order.telefone}
+                  </p>
+                  <p className='text-gray-600 text-xs truncate'>
+                    {order.email}
+                  </p>
+                </div>
+                <div className='sm:flex hidden justify-between items-center'>
+                  <BsThreeDotsVertical />
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
     </div>
   );
 };
 
-export default customers;
+export default Customers;

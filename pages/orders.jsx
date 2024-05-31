@@ -10,7 +10,7 @@ const Orders = () => {
       .then(data => {
         const transformedData = data.map(order => {
           const nameArray = order.nome.split(' ');
-          const firstName = nameArray.slice(0, 2).join(' ');
+          const firstName = nameArray.slice(0, 4).join(' '); // Get the first three words
 
           let status;
           switch (order.situacao) {
@@ -34,10 +34,10 @@ const Orders = () => {
             total: parseFloat(order.valor) || 0,
             pending: parseFloat(order.valorpen) || 0,
             attended: parseFloat(order.valoraten) || 0,
-            name: { first: firstName },
+            name: firstName, // Use the shortened name
             status: status,
             date: new Date(order.data).toLocaleDateString(),
-            method: 'Online',
+            pedido: order.pedido,
           };
         });
         setOrders(transformedData);
@@ -61,12 +61,13 @@ const Orders = () => {
                 <FaShoppingBag className='text-purple-800' />
               </div>
               <div className='pl-3'>
-                <p className='text-gray-800 text-xl font-semibold truncate'>{order.name.first}</p>
-                <p className='text-gray-800 font-bold text-lg'>R${order.total.toLocaleString()}</p>
-                <p className='text-gray-800 text-sm truncate'>PENDENTE: R$ {order.pending.toLocaleString()}</p>
-                <p className='text-gray-800 text-sm truncate'>ATENDIDO: R$ {order.attended.toLocaleString()}</p>
-                <p className='text-gray-600 text-sm truncate'>DATA PEDIDO: {order.date}</p>
-                <p className='text-gray-600 text-sm truncate'>SITUAÇÃO: {order.status}</p> {/* Corrigido para usar 'status' */}
+              <p className='text-gray-800 text-xs font-semibold truncate'>PEDIDO: {order.pedido}</p>
+                <p className='text-gray-800 text-xs  font-semibold truncate'>{order.name}</p>
+                <p className='text-gray-800 font-bold text-xs'>VALOR: R$ {order.total.toLocaleString()}</p>
+                <p className='text-gray-800 text-xs truncate'>PENDENTE: R$ {order.pending.toLocaleString()}</p>
+                <p className='text-gray-800 text-xs truncate'>ATENDIDO: R$ {order.attended.toLocaleString()}</p>
+                <p className='text-gray-600 text-xs truncate'>DATA PEDIDO: {order.date}</p>
+                <p className='text-gray-600 text-xs truncate'>SITUAÇÃO: {order.status}</p>
               </div>
             </div>
           </li>
