@@ -57,8 +57,8 @@ const Orders = () => {
             className='bg-gray-50 hover:bg-gray-100 rounded-lg my-2 p-6 grid grid-cols-1 md:grid-cols-4 gap-6 cursor-pointer'
           >
             <div className='flex items-center'>
-              <div className='bg-purple-100 p-2 rounded-lg'>
-                <FaShoppingBag className='text-purple-800' />
+              <div className='bg-custom-color p-2 rounded-lg'>
+                <FaShoppingBag className='text-gray-800' />
               </div>
               <div className='pl-3'>
               <p className='text-gray-800 text-xs font-semibold truncate'>PEDIDO: {order.pedido}</p>

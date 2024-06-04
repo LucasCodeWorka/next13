@@ -15,7 +15,7 @@ const Customers = () => {
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='flex justify-between p-4'>
-        <h2>Customers</h2>
+      <h2 className='text-gray-800 font-bold text-XL2' >LISTA DE CLIENTES </h2>
       </div>
       <ul>
         {data.map((order, id) => {
@@ -27,8 +27,8 @@ const Customers = () => {
               className='bg-gray-50 hover:bg-gray-100 rounded-lg my-2 p-6 grid grid-cols-1 md:grid-cols-4 gap-6 cursor-pointer'
             >
               <div className='flex items-center'>
-                <div className='bg-purple-100 p-3 rounded-lg'>
-                  <BsPersonFill className='text-purple-800' />
+                <div className='bg-custom-color  p-3 rounded-lg'>
+                  <BsPersonFill className='text-gray-800' />
                 </div>
                 <div className='pl-3'>
                   <p className='text-gray-800 text-xs font-semibold'>
@@ -67,5 +67,6 @@ const Customers = () => {
     </div>
   );
 };
+
 
 export default Customers;
