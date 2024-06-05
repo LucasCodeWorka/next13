@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaMoneyBillWave, FaClipboardList, FaBullseye, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 
 const TopCards = () => {
   const [data, setData] = useState([]);
   
-  // Função para converter o formato de moeda brasileiro para número
-  function parseCurrency(value) {
-    return parseFloat(value.replace("R$", "").replace(/\./g, "").replace(",", "."));
-  }
-
   useEffect(() => {
     // Função para buscar os dados da API
     const fetchData = async () => {
       try {
         const response = await axios.get('https://api4-eta.vercel.app/todos');
-        setData(response.data);
+        const userLogin = parseInt(localStorage.getItem('userLogin'));
+        
+        // Filtrar os dados com base no login do usuário
+        const filteredData = response.data.filter(item => item.cd_representant === userLogin);
+        setData(filteredData);
       } catch (error) {
         console.error('Erro ao buscar dados da API:', error);
       }
@@ -37,14 +37,16 @@ const TopCards = () => {
             {totalSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
           <p className='text-gray-600'>VENDAS (R$)</p>
         </div>
+        <FaMoneyBillWave className='text-green-800 text-4xl ml-4' />
       </div>
 
       {/* Segundo Card */}
       <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>{totalQtd}</p>
-          <p className='text-gray-600'> QUANTIDADE </p>
+          <p className='text-gray-600'>QUANTIDADE</p>
         </div>
+        <FaClipboardList className='text-blue-800 text-4xl ml-4' />
       </div>
 
       {/* Terceiro Card */}
@@ -54,28 +56,27 @@ const TopCards = () => {
             {totalMeta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
           <p className='text-gray-600'>META (R$)</p>
         </div>
+        <FaBullseye className='text-gray-800 text-4xl ml-4' />
       </div>
+
       {/* Quarto Card */}
       <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
-          <p className='text-2xl font-bold'>
-            1373</p>
+          <p className='text-2xl font-bold'>32</p>
           <p className='text-gray-600'>CLIENTES ATIVOS</p>
         </div>
+        <FaUserCheck className='text-green-500 text-4xl ml-4' />
       </div>
-      {/* Quarto Card */}
-          <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+
+      {/* Quinto Card */}
+      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
-          <p className='text-2xl font-bold'>
-          1395 </p>
+          <p className='text-2xl font-bold'>27</p>
           <p className='text-gray-600'>CLIENTES INATIVOS</p>
         </div>
+        <FaUserTimes className='text-red-500 text-4xl ml-4' />
       </div>
-
     </div>
-  
-
-
   );
 }
 

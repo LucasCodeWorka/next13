@@ -1,7 +1,7 @@
 // pages/login.js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { FiUser, FiLock } from 'react-icons/fi'; // Importando ícones
+import { FiUser, FiLock } from 'react-icons/fi';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -9,14 +9,22 @@ export default function Login() {
   const [error, setError] = useState('');
   const router = useRouter();
 
+  const users = [
+    { login: 18, password: "AGNALDO" },
+    { login: 86, password: "GLEIBSON" },
+    { login: 108, password: "CRISTINA" },
+    { login: 101, password: "CARLOS" }
+  ];
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
-    // Validação de usuário e senha (apenas exemplo, você deve usar algo mais seguro)
-    if (username === 'admin' && password === 'admin') {
-      // Armazena alguma indicação de login bem-sucedido (cookies, localStorage, etc.)
+    const user = users.find(u => u.login === parseInt(username) && u.password === password);
+
+    if (user) {
       localStorage.setItem('isLoggedIn', true);
+      localStorage.setItem('userLogin', user.login); // Armazena o login do usuário
       router.push('/');
     } else {
       setError('Credenciais inválidas');
@@ -26,10 +34,10 @@ export default function Login() {
   return (
     <div className='flex items-center justify-center min-h-screen bg-gray-100'>
       <div className='bg-white p-6 rounded shadow-md w-full max-w-sm'>
-        <h1 className='text-2xl mb-4 block text-gray-800 font-semibold truncate'>LOGIN</h1>
+        <h1 className='text-4xl mb-4 block text-custom-color font-semibold text-center'>LIEBE</h1>
         <form onSubmit={handleSubmit}>
           <div className='mb-4 flex items-center'>
-            <FiUser className='text-gray-500 mr-2' /> {/* Ícone do usuário */}
+            <FiUser className='text-gray-500 mr-2' />
             <input
               type="text"
               placeholder="Username"
@@ -39,7 +47,7 @@ export default function Login() {
             />
           </div>
           <div className='mb-4 flex items-center'>
-            <FiLock className='text-gray-500 mr-2' /> {/* Ícone de cadeado */}
+            <FiLock className='text-gray-500 mr-2' />
             <input
               type="password"
               placeholder="Password"
