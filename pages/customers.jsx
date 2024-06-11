@@ -5,6 +5,7 @@ import { BsPersonFill, BsThreeDotsVertical } from 'react-icons/bs';
 const Customers = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [expandedItems, setExpandedItems] = useState({});
   const router = useRouter();
   const unprotectedRoutes = ['/login', '/logout']; // Rotas que não requerem autenticação
 
@@ -43,6 +44,13 @@ const Customers = () => {
     setFilteredData(filtered);
   };
 
+  const toggleExpand = (id) => {
+    setExpandedItems((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
+
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='p-4'>
@@ -60,28 +68,70 @@ const Customers = () => {
       </div>
       <ul>
         {filteredData.map((order, id) => {
+          const isExpanded = expandedItems[id];
           return (
             <li
               key={id}
               className='bg-gray-50 hover:bg-gray-100 rounded-lg my-2 p-4 md:p-6 grid grid-cols-1 md:grid-cols-4 gap-6 cursor-pointer'
             >
               <div className='flex items-center'>
-                <div className='bg-custom-color  p-3 rounded-full'>
+                <div className='bg-custom-color p-3 rounded-full'>
                   <BsPersonFill className='text-gray-800' />
                 </div>
                 <div className='pl-3'>
                   <p className='text-gray-800 text-sm font-semibold'>
-                    {order.nome}
+                    {order.nome || 'Nome não disponível'}
                   </p>
                   <p className='text-gray-600 text-xs truncate'>
                     CNPJ: {order.cpfcnpj}
                   </p>
-                  <p className='text-gray-600 text-xs truncate'>
-                    Última Compra: {new Date(order.ultimacompra).toLocaleDateString()}
-                  </p>
-                  <p className='text-gray-600 text-xs truncate'>
-                    Cidade: {order.cidade} - {order.uf}
-                  </p>
+                  {isExpanded && (
+                    <>
+
+                      <p className='text-gray-600 text-xs truncate'>
+                        Faturas Vencidas: {order.faturas_vencidas || 'Não disponível'}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        Valor Vencido: {order.valor_vencido || 'Não disponível'}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        Primeira Compra: {new Date(order.primeiracompra).toLocaleDateString()}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        Última Compra: {new Date(order.ultimacompra).toLocaleDateString()}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        Cidade: {order.cidade} - {order.uf}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        CEP: {order.cep}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        Email: {order.email}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        Telefone: {order.telefone}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        2023.1 : {order.semestre_1_aa || 'Não disponível'}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        2023.2 : {order.semestre_2_aa || 'Não disponível'}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        2024.1 : {order.semestre_1 || 'Não disponível'}
+                      </p>
+                      <p className='text-gray-600 text-xs truncate'>
+                        2024.2 : {order.semestre_2 || 'Não disponível'}
+                      </p>
+                    </>
+                  )}
+                  <button
+                    onClick={() => toggleExpand(id)}
+                    className='text-blue-500 text-xs mt-2'
+                  >
+                    {isExpanded ? 'Ver menos' : 'Ver mais'}
+                  </button>
                 </div>
                 <div className='sm:flex hidden justify-between items-center text-gray-600'>
                   <BsThreeDotsVertical />
@@ -95,4 +145,4 @@ const Customers = () => {
   );
 };
 
-export default Customers;
+export default Customers;

@@ -5,6 +5,7 @@ import { IoIosApps } from "react-icons/io";
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { FiSettings, FiPower } from 'react-icons/fi'; // Importe o ícone FiPower
 import { RxPerson, RxSketchLogo } from 'react-icons/rx';
+import { FaRegMoneyBillAlt } from "react-icons/fa";
 
 const Sidebar = ({ children }) => {
   const router = useRouter();
@@ -35,6 +36,11 @@ const Sidebar = ({ children }) => {
           <Link href='/orders'>
             <div className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'>
               <HiOutlineShoppingBag size={20} />
+            </div>
+          </Link>
+          <Link href='/comiss'>
+            <div className='bg-gray-100 hover:bg-gray-200 cursor-pointer my-4 p-3 rounded-lg inline-block'>
+              <FaRegMoneyBillAlt size={20} />
             </div>
           </Link>
           {/* Substitua o botão de texto por um botão com o ícone FiPower */}

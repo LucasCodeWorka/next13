@@ -92,7 +92,7 @@ const Orders = () => {
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='flex justify-between px-4 pt-4'>
-        <h2 className="text-lg">LISTA DE PEDIDOS</h2>
+        <h2 className="text-gray-800 font-bold text-XL2 mb-4">LISTA DE PEDIDOS</h2>
       </div>
       <div className='p-4'>
         <div className="flex flex-col space-y-4 mb-4">
