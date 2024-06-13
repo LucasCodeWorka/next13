@@ -6,6 +6,7 @@ const Customers = () => {
   const [data, setData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [expandedItems, setExpandedItems] = useState({});
+  const [filterName, setFilterName] = useState('');
   const router = useRouter();
   const unprotectedRoutes = ['/login', '/logout']; // Rotas que não requerem autenticação
 
@@ -44,6 +45,13 @@ const Customers = () => {
     setFilteredData(filtered);
   };
 
+  // Função para filtrar clientes por nome
+  const filterByName = (name) => {
+    setFilterName(name);
+    const filtered = data.filter(order => order.nome.toLowerCase().includes(name.toLowerCase()));
+    setFilteredData(filtered);
+  };
+
   const toggleExpand = (id) => {
     setExpandedItems((prev) => ({
       ...prev,
@@ -55,15 +63,19 @@ const Customers = () => {
     <div className='bg-gray-100 min-h-screen'>
       <div className='p-4'>
         <h2 className='text-gray-800 font-bold text-XL2 mb-4'>LISTA DE CLIENTES</h2>
-        <div className="flex items-center space-x-4 mb-4">
+        <div className="flex flex-col space-y-4 mb-4 md:flex-row md:items-center md:space-y-0 md:space-x-4">
           {/* Filtro por CNPJ */}
           <input type="text" placeholder="CNPJ" onChange={(e) => filterByCnpj(e.target.value)} className="border border-gray-300 rounded-md px-3 py-1" />
           {/* Filtro por data da última compra */}
           <select onChange={(e) => filterByLastPurchaseDate(e.target.value)} className="border border-gray-300 rounded-md px-3 py-1">
             <option value="">Status</option>
-            <option value="6">Ativos</option>
+            <option value="6">Ativos</option> 
             <option value="6+">Inativos</option>
           </select>
+        </div>
+        {/* Filtro por nome */}
+        <div className="mb-4">
+          <input type="text" placeholder="Nome" value={filterName} onChange={(e) => filterByName(e.target.value)} className="border border-gray-300 rounded-md px-3 py-1 w-full md:w-auto" />
         </div>
       </div>
       <ul>
@@ -87,12 +99,11 @@ const Customers = () => {
                   </p>
                   {isExpanded && (
                     <>
-
                       <p className='text-gray-600 text-xs truncate'>
-                        Faturas Vencidas: {order.faturas_vencidas || 'Não disponível'}
+                        Faturas Vencidas: {order.faturas_vencidas || '0'}
                       </p>
                       <p className='text-gray-600 text-xs truncate'>
-                        Valor Vencido: {order.valor_vencido || 'Não disponível'}
+                        Valor Vencido: R$ {order.valor_vencido || '0'}
                       </p>
                       <p className='text-gray-600 text-xs truncate'>
                         Primeira Compra: {new Date(order.primeiracompra).toLocaleDateString()}
@@ -113,16 +124,16 @@ const Customers = () => {
                         Telefone: {order.telefone}
                       </p>
                       <p className='text-gray-600 text-xs truncate'>
-                        2023.1 : {order.semestre_1_aa || 'Não disponível'}
+                        2023.1 : R$ {order.semestre_1_aa || '0'}
                       </p>
                       <p className='text-gray-600 text-xs truncate'>
-                        2023.2 : {order.semestre_2_aa || 'Não disponível'}
+                        2023.2 : R$ {order.semestre_2_aa || '0'}
                       </p>
                       <p className='text-gray-600 text-xs truncate'>
-                        2024.1 : {order.semestre_1 || 'Não disponível'}
+                        2024.1 : R$ {order.semestre_1 || '0'}
                       </p>
                       <p className='text-gray-600 text-xs truncate'>
-                        2024.2 : {order.semestre_2 || 'Não disponível'}
+                        2024.2 : R$ {order.semestre_2 || '0'}
                       </p>
                     </>
                   )}

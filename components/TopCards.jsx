@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaMoneyBillWave, FaClipboardList, FaBullseye, FaUserCheck, FaUserTimes } from 'react-icons/fa';
+import { FaMoneyBillWave, FaRegChartBar ,FaClipboardList, FaBullseye, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 
 const TopCards = () => {
   const [data, setData] = useState([]);
@@ -28,6 +28,9 @@ const TopCards = () => {
   const totalQtd = data.reduce((accumulator, item) => accumulator + item.qtd, 0);
   const totalMeta = data.reduce((accumulator, item) => accumulator + item.meta, 0);
 
+  // Calculando a porcentagem da meta em relação às vendas
+  const percentageMeta = totalMeta > 0 ? (totalSum / totalMeta) * 100 : 0;
+
   return (
     <div className='grid lg:grid-cols-3 gap-4 p-4'>
       {/* Primeiro Card */}
@@ -44,7 +47,7 @@ const TopCards = () => {
       <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>{totalQtd}</p>
-          <p className='text-gray-600'>QUANTIDADE</p>
+          <p className='text-gray-600'>QUANTIDADE DE PEÇAS</p>
         </div>
         <FaClipboardList className='text-blue-800 text-4xl ml-4' />
       </div>
@@ -62,13 +65,22 @@ const TopCards = () => {
       {/* Quarto Card */}
       <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
+          <p className='text-2xl font-bold'>{percentageMeta.toFixed(2)}%</p>
+          <p className='text-gray-600'>ATINGIDO (%)</p>
+        </div>
+        <FaRegChartBar className='text-pink-800 text-4xl ml-4' />
+      </div>
+
+      {/* Quinto Card */}
+      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+        <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>32</p>
           <p className='text-gray-600'>CLIENTES ATIVOS</p>
         </div>
         <FaUserCheck className='text-green-500 text-4xl ml-4' />
       </div>
 
-      {/* Quinto Card */}
+      {/* Sexto Card */}
       <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>27</p>

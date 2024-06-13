@@ -11,7 +11,7 @@ const Comiss = () => {
   useEffect(() => {
     const userLogin = localStorage.getItem('userLogin'); // Obtenha o valor como string
 
-    fetch('https://api4-eta.vercel.app/comis')
+    fetch('https://api4-eta.vercel.app/inad')
       .then(response => response.json())
       .then(data => {
         console.log("User Login:", userLogin); // Log para verificar o valor de userLogin
@@ -77,10 +77,10 @@ const Comiss = () => {
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='flex justify-between px-4 pt-4'>
-        <h2 className="text-gray-800 font-bold text-XL2 mb-4">PREVISAO DE COMISSAO</h2>
+        <h2 className="text-gray-800 font-bold text-XL2 mb-4">INADIMPLÊNCIA</h2>
       </div>   
       <div>
-      <p className="text-blue-700 font-bold text-xs px-4 truncate">TOTAL: R$  {totalComissao}</p>
+      <p className="text-blue-700 font-bold text-xs px-4 truncate">PERCA: R$  {totalComissao}</p>
       </div>
   <div className='mb-4 p-4'>
     <div className='flex flex-col md:flex-row md:space-x-2'>
@@ -122,11 +122,11 @@ const Comiss = () => {
           <div className='pl-3'>
             <p className='text-gray-800 text-sm font-semibold truncate'>{order.nm_cliente}</p>
             <p className='text-gray-800 text-xs'>{order.ds_dstipocli}</p>
-            <p className='text-gray-800 text-xs truncate'>NOTA FISCAL: {order.nr_fatura}</p>
-            <p className='text-gray-600 text-xs truncate'>Emissão: {new Date(order.dt_emissao).toLocaleDateString()}</p>
+            <p className='text-gray-800 text-xs truncate'>FATURA: {order.nr_fatura}</p>
+            <p className='text-gray-600 text-xs truncate'>VENCIMENTO: {new Date(order.dt_emissao).toLocaleDateString()}</p>
             <p className='text-gray-600 text-xs truncate'>VALOR: R$ {order.vl_fatura.toFixed(2)}</p>
             <p className='text-gray-600 text-xs truncate'>Perc%: {order.vl_perccomiss}%</p>
-            <p className='text-gray-600 text-xs truncate'>Comissão: R$ {order.vl_vlcomis.toFixed(2)}</p>
+            <p className='text-gray-600 text-xs truncate'>PERCA: R$ {order.vl_vlcomis.toFixed(2)}</p>
           </div>
         </div>
       </li>
