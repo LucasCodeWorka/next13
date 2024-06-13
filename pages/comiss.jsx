@@ -77,7 +77,7 @@ const Comiss = () => {
   return (
     <div className='bg-gray-100 min-h-screen'>
       <div className='flex justify-between px-4 pt-4'>
-        <h2 className="text-gray-800 font-bold text-XL2 mb-4">PREVISAO DE COMISSAO</h2>
+        <h2 className="text-gray-800 font-bold text-XL2 mb-4">PREVISÃO DE COMISSÃO</h2>
       </div>   
       <div>
       <p className="text-blue-700 font-bold text-xs px-4 truncate">TOTAL: R$  {totalComissao}</p>
