@@ -7,6 +7,10 @@ const Comiss = () => {
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [totalComissao, setTotalComissao] = useState(0);
+  const formattedTotal = new Intl.NumberFormat('pt-BR', {
+    style: 'currency',
+    currency: 'BRL'
+  }).format(totalComissao);
 
   useEffect(() => {
     const userLogin = localStorage.getItem('userLogin'); // Obtenha o valor como string
@@ -72,6 +76,9 @@ const Comiss = () => {
     setTotalComissao(totalComissao.toFixed(2));
 
     setFilteredOrders(filtered);
+
+
+
   };
 
   return (
@@ -79,9 +86,12 @@ const Comiss = () => {
       <div className='flex justify-between px-4 pt-4'>
         <h2 className="text-gray-800 font-bold text-XL2 mb-4">PREVISÃO DE COMISSÃO</h2>
       </div>   
-      <div>
-      <p className="text-blue-700 font-bold text-xs px-4 truncate">TOTAL: R$  {totalComissao}</p>
-      </div>
+      <div className="bg-green-100 rounded-lg shadow-md p-1 max-w-xs mx-auto flex items-center justify-center">
+    <p className="text-gray-800 font-bold text-xl hover:bg-slate-600 px-2 py-1">
+   {formattedTotal}
+    </p>
+  </div>
+
   <div className='mb-4 p-4'>
     <div className='flex flex-col md:flex-row md:space-x-2'>
       <div className='flex-1 mb-2 md:mb-0'>

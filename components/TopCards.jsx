@@ -34,7 +34,7 @@ const TopCards = () => {
   return (
     <div className='grid lg:grid-cols-3 gap-4 p-4'>
       {/* Primeiro Card */}
-      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+      <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>
             {totalSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
@@ -44,7 +44,7 @@ const TopCards = () => {
       </div>
 
       {/* Segundo Card */}
-      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+      <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>{totalQtd}</p>
           <p className='text-gray-600'>QUANTIDADE DE PEÇAS</p>
@@ -53,7 +53,7 @@ const TopCards = () => {
       </div>
 
       {/* Terceiro Card */}
-      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+      <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>
             {totalMeta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
@@ -63,7 +63,7 @@ const TopCards = () => {
       </div>
 
       {/* Quarto Card */}
-      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+      <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>{percentageMeta.toFixed(2)}%</p>
           <p className='text-gray-600'>ATINGIDO (%)</p>
@@ -72,18 +72,18 @@ const TopCards = () => {
       </div>
 
       {/* Quinto Card */}
-      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+      <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
-          <p className='text-2xl font-bold'>32</p>
+          <p className='text-2xl font-bold'>63</p>
           <p className='text-gray-600'>CLIENTES ATIVOS</p>
         </div>
         <FaUserCheck className='text-green-500 text-4xl ml-4' />
       </div>
 
       {/* Sexto Card */}
-      <div className='bg-white flex justify-between w-full border p-4 rounded-lg'>
+      <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
-          <p className='text-2xl font-bold'>27</p>
+          <p className='text-2xl font-bold'>97</p>
           <p className='text-gray-600'>CLIENTES INATIVOS</p>
         </div>
         <FaUserTimes className='text-red-500 text-4xl ml-4' />
