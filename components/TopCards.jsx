@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaMoneyBillWave, FaRegChartBar ,FaClipboardList, FaBullseye, FaUserCheck, FaUserTimes } from 'react-icons/fa';
+import { FaMoneyBillWave, FaRegChartBar, FaClipboardList, FaBullseye, FaUserCheck, FaUserTimes } from 'react-icons/fa';
 
 const TopCards = () => {
   const [data, setData] = useState([]);
   
   useEffect(() => {
-    // Função para buscar os dados da API
     const fetchData = async () => {
       try {
         const response = await axios.get('https://api4-eta.vercel.app/todos');
         const userLogin = parseInt(localStorage.getItem('userLogin'));
-        
+
         // Filtrar os dados com base no login do usuário
         const filteredData = response.data.filter(item => item.cd_representant === userLogin);
         setData(filteredData);
@@ -27,6 +26,8 @@ const TopCards = () => {
   const totalSum = data.reduce((accumulator, item) => accumulator + parseFloat(item.valor), 0);
   const totalQtd = data.reduce((accumulator, item) => accumulator + item.qtd, 0);
   const totalMeta = data.reduce((accumulator, item) => accumulator + item.meta, 0);
+  const lastYearSum = 50000; // Exemplo de valor do ano anterior
+  const growthPercentage = ((totalSum - lastYearSum) / lastYearSum) * 100; // Cálculo da porcentagem de crescimento
 
   // Calculando a porcentagem da meta em relação às vendas
   const percentageMeta = totalMeta > 0 ? (totalSum / totalMeta) * 100 : 0;
@@ -37,8 +38,19 @@ const TopCards = () => {
       <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>
-            {totalSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+            {totalSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </p>
           <p className='text-gray-600'>VENDAS (R$)</p>
+          <div className='flex flex-col mt-2'>
+            <p className='text-lg font-semibold'>
+              {lastYearSum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </p>
+            <p className='text-gray-600 text-sm'>ANO ANTERIOR</p>
+            <p className={`text-lg font-semibold ${growthPercentage >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+              {growthPercentage.toFixed(2)}%
+            </p>
+            <p className='text-gray-600 text-sm'>CRESCIMENTO</p>
+          </div>
         </div>
         <FaMoneyBillWave className='text-green-800 text-4xl ml-4' />
       </div>
@@ -56,7 +68,8 @@ const TopCards = () => {
       <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
           <p className='text-2xl font-bold'>
-            {totalMeta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</p>
+            {totalMeta.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </p>
           <p className='text-gray-600'>META (R$)</p>
         </div>
         <FaBullseye className='text-gray-800 text-4xl ml-4' />
