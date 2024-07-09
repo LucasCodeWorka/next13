@@ -20,7 +20,7 @@ const Customers = () => {
   const [expandedItems, setExpandedItems] = useState({});
   const [filterName, setFilterName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null); // Alterado para um único pedido selecionado
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const router = useRouter();
   const unprotectedRoutes = ['/login', '/logout'];
 
@@ -46,13 +46,15 @@ const Customers = () => {
       const cliData = await cliResponse.json();
       const prodData = await prodResponse.json();
 
-      // Filtra os dados de clientes com base no usuário logado
-      const filteredCliData = cliData.filter(cliItem => cliItem.cd_representant === userLogin);
+      // Verifica se o filtro está correto
+      const filteredCliData = cliData.filter(cliItem => {
+        console.log(cliItem.cd_representant, userLogin); // Adiciona logs para depuração
+        return cliItem.cd_representant === userLogin;
+      });
 
       const combinedData = filteredCliData.map(cliItem => {
-        const cliKey = cliItem.nome.split(' - ')[0].trim(); // Obtém o cliKey do nome
+        const cliKey = cliItem.nome.split(' - ')[0].trim();
         const clientProducts = prodData.filter(prodItem => prodItem.cd_cliente.toString() === cliKey);
-        console.log(clientProducts)
         return { ...cliItem, products: clientProducts };
       });
 
@@ -92,12 +94,12 @@ const Customers = () => {
   };
 
   const openModal = (order) => {
-    setSelectedOrder(order); // Define o pedido selecionado para abrir o modal
+    setSelectedOrder(order);
     setIsModalOpen(true);
   };
 
   const closeModal = () => {
-    setSelectedOrder(null); // Limpa o pedido selecionado ao fechar o modal
+    setSelectedOrder(null);
     setIsModalOpen(false);
   };
 
@@ -109,7 +111,7 @@ const Customers = () => {
           <input type="text" placeholder="CNPJ" onChange={(e) => filterByCnpj(e.target.value)} className="border border-gray-300 rounded-md px-3 py-1" />
           <select onChange={(e) => filterByLastPurchaseDate(e.target.value)} className="border border-gray-300 rounded-md px-3 py-1">
             <option value="">Status</option>
-            <option value="6">Ativos</option> 
+            <option value="6">Ativos</option>
             <option value="6+">Inativos</option>
           </select>
         </div>
@@ -161,57 +163,56 @@ const Customers = () => {
           );
         })}
       </ul>
-  <Modal
-  isOpen={isModalOpen}
-  onRequestClose={closeModal}
-  style={customStyles}
-    >
-  {selectedOrder && (
-    <div className="my-4">
-      <p><span className="font-bold"></span> {selectedOrder.cd_cliente}</p>
-      <p><span className="font-bold"></span>{selectedOrder.valor}</p>
-      {selectedOrder.products && selectedOrder.products.length > 0 && (
-         <>
-         <h3 className="text-lg font-bold mt-4 mb-2">DETALHAMENTO:</h3>
-         <table className="min-w-full divide-y divide-gray-200">
-           <thead>
-             <tr>
-               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Família</th>
-               <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
-             </tr>
-           </thead>
-           <tbody className="bg-white divide-y divide-gray-200">
-             {selectedOrder.products.map((product, prodIndex) => {
-               const prevProduct = selectedOrder.products[prodIndex - 1];
-               const isNewGroup = !prevProduct || product.ano !== prevProduct.ano || product.semestre !== prevProduct.semestre;
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+      >
+        {selectedOrder && (
+          <div className="my-4">
+            <p><span className="font-bold">Código Cliente:</span> {selectedOrder.cd_cliente}</p>
+            <p><span className="font-bold">Valor:</span> {selectedOrder.valor}</p>
+            {selectedOrder.products && selectedOrder.products.length > 0 && (
+              <>
+                <h3 className="text-lg font-bold mt-4 mb-2">DETALHAMENTO:</h3>
+                <table className="min-w-full divide-y divide-gray-200">
+                  <thead>
+                    <tr>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Família</th>
+                      <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Valor</th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-white divide-y divide-gray-200">
+                    {selectedOrder.products.map((product, prodIndex) => {
+                      const prevProduct = selectedOrder.products[prodIndex - 1];
+                      const isNewGroup = !prevProduct || product.ano !== prevProduct.ano || product.semestre !== prevProduct.semestre;
 
-               return (
-                 <React.Fragment key={prodIndex}>
-                   {isNewGroup && (
-                     <tr className="bg-gray-100">
-                       <td colSpan="2" className="px-4 py-2 text-left text-sm font-medium text-gray-700">
-                         Semestre: {product.semestre} / Ano: {product.ano}
-                       </td>
-                     </tr>
-                   )}
-                   <tr>
-                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">{product.familia}</td>
-                     <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">{product.valor}</td>
-                   </tr>
-                 </React.Fragment>
-               );
-             })}
-           </tbody>
-         </table>
-       </>
-      )}
-    </div>
-  )}
-  <button onClick={closeModal} className="bg-gray-500 hover:gray-700 text-white font-bold py-2 px-4 rounded mt-4">
-    Fechar 
-  </button>
-</Modal>
-
+                      return (
+                        <React.Fragment key={prodIndex}>
+                          {isNewGroup && (
+                            <tr className="bg-gray-100">
+                              <td colSpan="2" className="px-4 py-2 text-left text-sm font-medium text-gray-700">
+                                Semestre: {product.semestre} / Ano: {product.ano}
+                              </td>
+                            </tr>
+                          )}
+                          <tr>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">{product.familia}</td>
+                            <td className="px-4 py-2 whitespace-nowrap text-sm text-gray-600">{product.valor}</td>
+                          </tr>
+                        </React.Fragment>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </>
+            )}
+          </div>
+        )}
+        <button onClick={closeModal} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mt-4">
+          Fechar
+        </button>
+      </Modal>
     </div>
   );
 };
