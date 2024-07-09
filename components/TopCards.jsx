@@ -4,7 +4,8 @@ import { FaMoneyBillWave, FaRegChartBar, FaClipboardList, FaBullseye, FaUserChec
 
 const TopCards = () => {
   const [data, setData] = useState([]);
-  
+  const [lastYearSum, setLastYearSum] = useState(0);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -14,6 +15,10 @@ const TopCards = () => {
         // Filtrar os dados com base no login do usuário
         const filteredData = response.data.filter(item => item.cd_representant === userLogin);
         setData(filteredData);
+
+        // Obter o valor do ano anterior
+        const lastYearValue = filteredData.reduce((accumulator, item) => accumulator + parseFloat(item.aavalor), 0);
+        setLastYearSum(lastYearValue);
       } catch (error) {
         console.error('Erro ao buscar dados da API:', error);
       }
@@ -26,7 +31,6 @@ const TopCards = () => {
   const totalSum = data.reduce((accumulator, item) => accumulator + parseFloat(item.valor), 0);
   const totalQtd = data.reduce((accumulator, item) => accumulator + item.qtd, 0);
   const totalMeta = data.reduce((accumulator, item) => accumulator + item.meta, 0);
-  const lastYearSum = 50000; // Exemplo de valor do ano anterior
   const growthPercentage = ((totalSum - lastYearSum) / lastYearSum) * 100; // Cálculo da porcentagem de crescimento
 
   // Calculando a porcentagem da meta em relação às vendas

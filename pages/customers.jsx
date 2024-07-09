@@ -36,6 +36,8 @@ const Customers = () => {
 
   const fetchData = async () => {
     try {
+      const userLogin = parseInt(localStorage.getItem('userLogin'));
+
       const [cliResponse, prodResponse] = await Promise.all([
         fetch('https://api4-eta.vercel.app/cli'),
         fetch('https://api4-eta.vercel.app/prod')
@@ -44,7 +46,10 @@ const Customers = () => {
       const cliData = await cliResponse.json();
       const prodData = await prodResponse.json();
 
-      const combinedData = cliData.map(cliItem => {
+      // Filtra os dados de clientes com base no usuário logado
+      const filteredCliData = cliData.filter(cliItem => cliItem.cd_representant === userLogin);
+
+      const combinedData = filteredCliData.map(cliItem => {
         const cliKey = cliItem.nome.split(' - ')[0].trim(); // Obtém o cliKey do nome
         const clientProducts = prodData.filter(prodItem => prodItem.cd_cliente.toString() === cliKey);
         console.log(clientProducts)
@@ -202,7 +207,7 @@ const Customers = () => {
       )}
     </div>
   )}
-  <button onClick={closeModal} className="bg-gra-500 hover:gray-700 text-white font-bold py-2 px-4 rounded mt-4">
+  <button onClick={closeModal} className="bg-gray-500 hover:gray-700 text-white font-bold py-2 px-4 rounded mt-4">
     Fechar 
   </button>
 </Modal>

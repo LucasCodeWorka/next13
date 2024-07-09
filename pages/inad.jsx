@@ -12,6 +12,13 @@ const Comiss = () => {
     currency: 'BRL'
   }).format(totalComissao);
 
+  const isJuneOrJuly2024 = (dateStr) => {
+    const date = new Date(dateStr);
+    const month = date.getMonth() + 1; // getMonth() is zero-based, so add 1
+    const year = date.getFullYear();
+    return (month === 6 || month === 7) && year === 2024;
+  };
+
   useEffect(() => {
     const userLogin = localStorage.getItem('userLogin'); // Obtenha o valor como string
 
@@ -21,7 +28,9 @@ const Comiss = () => {
         console.log("User Login:", userLogin); // Log para verificar o valor de userLogin
         console.log("Fetched Data:", data); // Log para verificar os dados obtidos
 
-        const filteredData = data.filter(order => order.cd_representant === userLogin);
+        const filteredData = data.filter(order => 
+          order.cd_representant === userLogin && isJuneOrJuly2024(order.dt_emissao)
+        );
 
         console.log("Filtered Data:", filteredData); // Log para verificar os dados filtrados
 
