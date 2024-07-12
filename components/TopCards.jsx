@@ -5,20 +5,41 @@ import { FaMoneyBillWave, FaRegChartBar, FaClipboardList, FaBullseye, FaUserChec
 const TopCards = () => {
   const [data, setData] = useState([]);
   const [lastYearSum, setLastYearSum] = useState(0);
+  const [activeClients, setActiveClients] = useState(0);
+  const [inactiveClients, setInactiveClients] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('https://api4-eta.vercel.app/todos');
         const userLogin = parseInt(localStorage.getItem('userLogin'));
 
+        const todosResponse = await axios.get('https://api4-eta.vercel.app/todos');
+        const clientsResponse = await axios.get(`https://api4-eta.vercel.app/cli?cd_representant=${userLogin}`);
+
         // Filtrar os dados com base no login do usuário
-        const filteredData = response.data.filter(item => item.cd_representant === userLogin);
+        const filteredData = todosResponse.data.filter(item => item.cd_representant === userLogin);
         setData(filteredData);
 
         // Obter o valor do ano anterior
         const lastYearValue = filteredData.reduce((accumulator, item) => accumulator + parseFloat(item.aavalor), 0);
         setLastYearSum(lastYearValue);
+
+        // Calcular clientes ativos e inativos
+        const oneYearAgo = new Date();
+        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
+
+        const active = clientsResponse.data.filter(client => {
+          const lastPurchaseDate = new Date(client.ultimacompra);
+          return lastPurchaseDate >= oneYearAgo;
+        }).length;
+
+        const inactive = clientsResponse.data.filter(client => {
+          const lastPurchaseDate = new Date(client.ultimacompra);
+          return lastPurchaseDate < oneYearAgo;
+        }).length;
+
+        setActiveClients(active);
+        setInactiveClients(inactive);
       } catch (error) {
         console.error('Erro ao buscar dados da API:', error);
       }
@@ -91,7 +112,7 @@ const TopCards = () => {
       {/* Quinto Card */}
       <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
-          <p className='text-2xl font-bold'>63</p>
+          <p className='text-2xl font-bold'>{activeClients}</p>
           <p className='text-gray-600'>CLIENTES ATIVOS</p>
         </div>
         <FaUserCheck className='text-green-500 text-4xl ml-4' />
@@ -100,7 +121,7 @@ const TopCards = () => {
       {/* Sexto Card */}
       <div className='bg-white shadow-md flex justify-between w-full border p-4 rounded-lg'>
         <div className='flex flex-col w-full pb-2'>
-          <p className='text-2xl font-bold'>97</p>
+          <p className='text-2xl font-bold'>{inactiveClients}</p>
           <p className='text-gray-600'>CLIENTES INATIVOS</p>
         </div>
         <FaUserTimes className='text-red-500 text-4xl ml-4' />

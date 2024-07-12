@@ -21,6 +21,8 @@ const Customers = () => {
   const [filterName, setFilterName] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1); // Estado para controlar a página atual
+  const [itemsPerPage] = useState(30); // Número de itens por página
   const router = useRouter();
   const unprotectedRoutes = ['/login', '/logout'];
 
@@ -30,44 +32,46 @@ const Customers = () => {
     if (!isLoggedIn && !unprotectedRoutes.includes(router.pathname)) {
       router.push('/login');
     } else {
-      fetchData();
+      fetchData(currentPage);
     }
-  }, [router.pathname]);
+  }, [router.pathname, currentPage]);
 
-  const fetchData = async () => {
+  useEffect(() => {
+    setFilteredData(data);
+  }, [data]);
+
+  const fetchData = async (page = 1) => {
     try {
       const userLogin = parseInt(localStorage.getItem('userLogin'));
 
       const [cliResponse, prodResponse] = await Promise.all([
-        fetch('https://api4-eta.vercel.app/cli'),
+        fetch(`https://api4-eta.vercel.app/cli?cd_representant=${userLogin}`),
         fetch('https://api4-eta.vercel.app/prod')
       ]);
 
       const cliData = await cliResponse.json();
       const prodData = await prodResponse.json();
 
-      // Verifica se o filtro está correto
-      const filteredCliData = cliData.filter(cliItem => {
-        console.log(cliItem.cd_representant, userLogin); // Adiciona logs para depuração
-        return cliItem.cd_representant === userLogin;
-      });
-
-      const combinedData = filteredCliData.map(cliItem => {
+      const combinedData = cliData.map(cliItem => {
         const cliKey = cliItem.nome.split(' - ')[0].trim();
         const clientProducts = prodData.filter(prodItem => prodItem.cd_cliente.toString() === cliKey);
         return { ...cliItem, products: clientProducts };
       });
 
       setData(combinedData);
-      setFilteredData(combinedData);
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
   const filterByCnpj = (cnpj) => {
     const filtered = data.filter(order => order.cpfcnpj.includes(cnpj));
     setFilteredData(filtered);
+    setCurrentPage(1); // Resetar para a primeira página ao aplicar filtro
   };
 
   const filterByLastPurchaseDate = (months) => {
@@ -78,12 +82,14 @@ const Customers = () => {
       return months === '6' ? diffInMonths < 6 : months === '6+' ? diffInMonths >= 6 : true;
     });
     setFilteredData(filtered);
+    setCurrentPage(1); // Resetar para a primeira página ao aplicar filtro
   };
 
   const filterByName = (name) => {
     setFilterName(name);
     const filtered = data.filter(order => order.nome.toLowerCase().includes(name.toLowerCase()));
     setFilteredData(filtered);
+    setCurrentPage(1); // Resetar para a primeira página ao aplicar filtro
   };
 
   const toggleExpand = (id) => {
@@ -213,6 +219,22 @@ const Customers = () => {
           Fechar
         </button>
       </Modal>
+      <div className="flex justify-center mt-4">
+        <button
+          onClick={() => handlePageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded-l"
+        >
+          Anterior
+        </button>
+        <button
+          onClick={() => handlePageChange(currentPage + 1)}
+          disabled={data.length < itemsPerPage}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-600 font-bold py-2 px-4 rounded-r"
+        >
+          Próximo
+        </button>
+      </div>
     </div>
   );
 };
