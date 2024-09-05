@@ -9,7 +9,7 @@ const Header = () => {
       </div>
       <div className="flex items-center">
         <FiCalendar className="text-custom-color text-2xl mr-2" />
-        <span className='text-gray-600 font-semibold text-lg'>Julho de 2024</span> 
+        <span className='text-gray-600 font-semibold text-lg'>Setembro de 2024</span> 
       </div>
     </div>
   );
